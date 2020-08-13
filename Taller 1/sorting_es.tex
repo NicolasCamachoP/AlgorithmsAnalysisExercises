@@ -1,0 +1,457 @@
+%% LyX 2.3.2 created this file.  For more info, see http://www.lyx.org/.
+%% Do not edit unless you really know what you are doing.
+\documentclass[spanish]{article}
+\usepackage[T1]{fontenc}
+\usepackage[latin9]{inputenc}
+\usepackage{float}
+\usepackage{amsmath}
+\usepackage{amsthm}
+\usepackage{amssymb}
+\PassOptionsToPackage{normalem}{ulem}
+\usepackage{ulem}
+
+\makeatletter
+
+%%%%%%%%%%%%%%%%%%%%%%%%%%%%%% LyX specific LaTeX commands.
+\newcommand{\noun}[1]{\textsc{#1}}
+\floatstyle{ruled}
+\newfloat{algorithm}{tbp}{loa}
+\providecommand{\algorithmname}{Algoritmo}
+\floatname{algorithm}{\protect\algorithmname}
+
+%%%%%%%%%%%%%%%%%%%%%%%%%%%%%% Textclass specific LaTeX commands.
+\numberwithin{equation}{section}
+\numberwithin{figure}{section}
+\theoremstyle{definition}
+\newtheorem*{defn*}{\protect\definitionname}
+
+%%%%%%%%%%%%%%%%%%%%%%%%%%%%%% User specified LaTeX commands.
+\usepackage{xmpmulti}
+\usepackage{algorithm,algpseudocode}
+
+\makeatother
+
+\usepackage{babel}
+\addto\shorthandsspanish{\spanishdeactivate{~<>}}
+
+\providecommand{\definitionname}{Definición}
+
+\begin{document}
+\title{Problema del <<ordenamiento de elementos>>}
+\author{Leonardo Flórez-Valencia}
+\date{\today}
+\maketitle
+\begin{abstract}
+En este documento se presenta el problema del ordenamiento de elementos:
+análisis, diseño y algunos algoritmos, que son ampliamente conocidos
+en la literatura, que lo solucionan.
+\end{abstract}
+
+\part{Análisis y diseño del problema}
+
+\section{Análisis}
+
+El problema, informalmente, se puede describir como: ordenar/organizar
+una lista/vector/arreglo de números. Genéricamente, no se puede hablar
+de listas, vectores o arreglos porque estas son estructuras de datos
+reales que pueden (o no) existir fácilmente en un lenguaje de programación
+(por ejemplo, piense en la forma de implementar un vector o una lista
+en lenguaje ensamblador); entonces, se habla de secuencias de números:
+\[
+S=\left\langle s_{1},s_{2},\cdots,s_{n}\right\rangle =\left\langle s_{i}\in\mathbb{Z}\land1\le i\le n\right\rangle 
+\]
+donde $n$ es la cardinalidad (i.e. cantidad de elementos) de la secuencia
+e $i$ es el índice de cada elemento (note que el primer índice es
+1 y no 0).
+
+Varias preguntas pueden surgir acá:
+\begin{itemize}
+\item ¿únicamente se pueden ordenar números enteros ($\mathbb{Z}$)?
+\item ¿Qué <<criterio>> existe para decir que una secuencia está ordenada?
+\item ¿Se puede usar este <<criterio>> para ordenar una secuencia?
+\end{itemize}
+Resulta obvio que los números enteros no son los únicos ordenables:
+al menos los naturales ($\mathbb{N}$), quebrados ($\mathbb{Q}$),
+reales ($\mathbb{R}$) e imaginarios ($\mathbb{I}$) son intuitivamente
+ordenables. Pero, se puede pensar en otros elementos que pueden ser
+ordenables: palabras (para editar diccionarios, por ejemplo), frutas
+(por su tamaño), animales (por su nombre, su género o su número de
+dientes, por poner algunos ejemplos). Entonces, si nos enteros no
+son los únicos elementos ordenables, nuestra definición de secuencia
+para este problema debe cambiar un poco:
+\[
+S=\left\langle s_{i}\in\mathbb{T}\land1\le i\le n\right\rangle 
+\]
+donde $\mathbb{T}$ es un conjunto de elementos que pueden ser ordenables.
+
+Ahora, ¿qué quiere decir que unos elementos sean ordenables? Es decir,
+¿cuál es el <<criterio>> de ordenamiento? Intuitivamente, sabemos
+que dados dos números podemos saber quién va primero y quién va después,
+para esto existe el símbolo $\le$; que, formalmente, expresa una
+relación de orden parcial entre elementos. Entonces, si en el conjunto
+$\mathbb{T}$ podemos definir una relación de orden parcial $\le$,
+un algoritmo de ordenamiento debe generar una permutación $S'$, a
+partir de $S$, que cumpla con la condiciones:
+\[
+S'=\left\langle s'_{i}\in S\land s'_{i-1}\le s'_{i}\forall1<i\land1\le i\le n\right\rangle 
+\]
+es decir, que la relación de orden parcial $\le$ se cumpla entre
+elementos adyacentes de la secuencia permutada. Debe notarse que la
+única condición para que se pueda crear la permutación es que la relación
+de orden parcial $\le$ este definida en $\mathbb{T}$. Recordemos
+que una relación de orden parcial debe cumplir con las propiedades:
+\begin{itemize}
+\item Reflexividad: $a\le a$.
+\item Antisimetría: si $a\le b$ y $b\le a$, entonces $a=b$.
+\item Transitividad: si $a\le b$ y $b\le c$, entonces $a\le c$.
+\end{itemize}
+
+\section{Diseño}
+
+Con las observaciones presentadas en el análisis anterior, podemos
+escribir el diseño de un algoritmo que solucione el problema de ordenamiento.
+A veces este diseño se conoce como el <<contrato>> del algoritmmos
+o las <<precondiciones>> y <<poscondiciones>> del algoritmo. El
+diseño se compone de entradas y salidas:
+\begin{defn*}
+Entradas:
+\begin{enumerate}
+\item Una secuencia $S=\left\langle s_{i}\in\mathbb{T}\land1\le i\le n\right\rangle $
+de $n\in\mathbb{N}$ elementos que pertenecen a un conjunto $\mathbb{T}$.
+En este conjunto debe estar definida la relación de orden parcial
+$\le$; o la relaciones de transitividad $<$ y de equivalencia $=$.
+\end{enumerate}
+\end{defn*}
+~~~~
+\begin{defn*}
+Salidas:
+\begin{enumerate}
+\item Una permutacion $S'=\left\langle s'_{i}\in S\land s'_{i-1}\le s'_{i}\forall1<i\land1\le i\le n\right\rangle $
+de la secuencia de entrada $S$.
+\end{enumerate}
+\end{defn*}
+~~~~~
+
+\part{Algoritmos}
+
+\section{Permutativo}
+
+\subsection{Algoritmo}
+
+Este algoritmo se basa en la idea de calcular todas las permutaciones
+posibles de la secuencia; cuando una permutación ordenada es encontrada,
+el algoritmo para.
+
+\begin{algorithm}[H]
+\begin{algorithmic}[1]
+
+\Procedure{PermutativeSort}{$S$}
+
+  \State$S'\leftarrow S$
+
+  \While{$\lnot\text{\textsc{IsSorted}}\left(S'\right)$}
+
+    \State$S'\leftarrow\text{\textsc{NextPermutation}}\left(S\right)$
+
+  \EndWhile
+
+  \State\Return{$S'$}
+
+\EndProcedure
+
+\end{algorithmic}
+
+\caption{Ordenamiento permutativo}
+\end{algorithm}
+
+Este algoritmo necesita de dos algoritmos auxiliares:
+\begin{enumerate}
+\item \noun{IsSorted}, que verifica si una secuencia sigue la relación de
+orden parcial $\le$.
+\item \noun{NextPermutation}, que calcula la siguiente permutación de $S$.
+\end{enumerate}
+Ahora se escribe el algoritmo \noun{IsSorted} (\noun{NextPermutation
+}se deja como ejercicio):
+
+\begin{algorithm}[H]
+\begin{algorithmic}[1]
+
+\Procedure{IsSorted}{$S$}
+
+  \State$isOrdered\leftarrow true$
+
+  \State$i\leftarrow1$
+
+  \While{$isOrdered\land i<\left|S\right|$}
+
+    \State$isOrdered\leftarrow s_{i}\le s_{i+1}\land isOrdered$
+
+    \State$i\leftarrow i+1$
+
+  \EndWhile
+
+  \State\Return{$isOrdered$}
+
+\EndProcedure
+
+\end{algorithmic}
+
+\caption{Indica si una secuencia está ordenada.}
+\end{algorithm}
+
+
+\subsection{Complejidad}
+
+El algoritmo \noun{IsSorted} tiene órdenes de complejidad $O\left(\left|S\right|\right)$
+y $\Omega\left(1\right)$ (¿por qué?). Ambos órdenes son calculados
+por inspección de código.
+
+Como este algoritmo es usado dentro del esquema permutativo del algoritmo
+\noun{PermutativeSort}, éste tiene ordenes de complejidad $O\left(\left|S\right|!\left|S\right|\right)$
+y $\Omega\left(\left|S\right|!\right)$, también calculados por inspección
+de código.
+
+\subsection{Invariante}
+
+\subsubsection{IsSorted}
+
+La bandera de control \texttt{isOrdered} indica si la secuencia $S_{1\rightarrow i}$
+(la secuencia desde 1 hasta i) sigue la relacion de orden parcial
+$\le$.
+\begin{itemize}
+\item \textbf{\uline{Inicio}}: la secuencia vacia $S_{1\rightarrow0}=\emptyset$
+está ordenada.
+\item \textbf{\uline{Avance}}: si la secuencia $S_{1\rightarrow i}$
+está ordenada, se verifica la relacion entre $S_{i}$ y $S_{i+1}$
+y se modifica \texttt{isOrdered} de acuerdo.
+\item \textbf{\uline{Terminación}}: si la secuencia $S_{i\rightarrow n}$
+está ordenada, \texttt{isOrdered} nunca dejo de ser <<\texttt{true}>>;
+si alguna pareja de elementos adyacentes no sigue la relacion, \texttt{isOrdered}
+cambio su estado a <<\texttt{false}>>.
+\end{itemize}
+
+\subsubsection{PermutativeSort}
+
+$S'$ contiene una permutación ordenada de $S$.
+\begin{itemize}
+\item \textbf{\uline{Inicio}}: $S$ puede que esté ordenada.
+\item \textbf{\uline{Avance}}: Si $S^{(i)'}$ (la i-ésima permutación)
+está ordenada termine, avance a la siguiente permutación en caso contrario.
+\item \textbf{\uline{Terminación}}: $S'$ tiene el valor de una permutación
+ordenada (ejercicio de reflexión personal: ¿se puede demostrar que
+una secuencia siempre tendrá una permutación ordenada?).
+\end{itemize}
+
+\subsection{Notas de implementación}
+
+Este algoritmo necesita de una forma de representación de secuencias
+que permita la implementación de un algoritmo permutativo. Hoy en
+día, la mayoría de lenguajes ofrecen librerías para hacer este tipo
+de iteraciones permutativas. La mayoría de ellas funciona sobre contenedores
+lineales de acceso aleatorio (arreglos).
+
+\section{Burbuja}
+
+\subsection{Algoritmo}
+
+Este algoritmo se basa en la idea: en una iteración completa sobre
+la secuencia, se puede hacer que los elementos más grandes <<floten>>
+hasta las últimas posiciones de la secuencia.
+
+\begin{algorithm}[H]
+\begin{algorithmic}[1]
+
+\Procedure{BubbleSort}{$S$}
+
+\For{$i\leftarrow1$ \textbf{to} $\left|S\right|$}
+
+  \For{$j\leftarrow1$ \textbf{to} $\left|S\right|-i$}
+
+    \If{$S\left[j+1\right]<S\left[j\right]$}
+
+      \State$aux\leftarrow S\left[j\right]$
+
+      \State$S\left[j\right]\leftarrow S\left[j+1\right]$
+
+      \State$S\left[j+1\right]\leftarrow aux$
+
+    \EndIf
+
+  \EndFor
+
+\EndFor
+
+\EndProcedure
+
+\end{algorithmic}
+
+\caption{Ordenamiento burbuja}
+\end{algorithm}
+
+
+\subsection{Complejidad}
+
+El algoritmo tiene orden de complejidad $O\left(\left|S\right|^{2}\right)$.
+El cálculo se hace por inspección de código.
+
+\subsection{Invariante}
+
+\subsection{Notas de implementación}
+
+\section{Inserción}
+
+\subsection{Algoritmo}
+
+Este algoritmo se basa en la idea: en cada iteración, mantener ordenados
+los elementos hasta esa posición.
+
+\begin{algorithm}[H]
+\begin{algorithmic}[1]
+
+\Procedure{InsertionSort}{$S$}
+
+\For{$j\leftarrow2$ \textbf{to} $\left|\mathcal{S}\right|$}
+
+  \State$k\leftarrow\mathcal{S}\left[j\right]$
+
+  \State$i\leftarrow j-1$
+
+  \While{$0<i\land k<\mathcal{S}\left[i\right]$}
+
+    \State$\mathcal{S}\left[i+1\right]\leftarrow\mathcal{S}\left[i\right]$
+
+    \State$i\leftarrow i-1$
+
+  \EndWhile
+
+  \State$\mathcal{S}\left[i+1\right]\leftarrow k$
+
+\EndFor
+
+\EndProcedure
+
+\end{algorithmic}
+
+\caption{Ordenamiento por inserción}
+
+\end{algorithm}
+
+
+\subsection{Complejidad}
+
+El algoritmo tiene orden de complejidad $O\left(\left|S\right|^{2}\right)$.
+El cálculo se hace por inspección de código.
+
+\subsection{Invariante}
+
+\subsection{Notas de implementación}
+
+\section{Mezclas}
+
+\subsection{Algoritmo}
+
+Este algoritmo se basa en la idea: si se obtiene de alguna forma dos
+secuencias ordenadas, la secuencia total resulta de mezclarlas.
+
+\begin{algorithm}[H]
+\begin{algorithmic}[1]
+
+\Procedure{MergeSort}{$S$}
+
+  \State$\mbox{\textsc{MergeSort}\_Aux}\left(S,1,\left|S\right|\right)$
+
+\EndProcedure
+
+\end{algorithmic}
+
+\caption{Ordenamiento por mezclas (1)}
+\end{algorithm}
+
+\begin{algorithm}[H]
+\begin{algorithmic}[1]
+
+\Procedure{MergeSort\_Aux}{$S,b,e$}
+
+  \If{$b<e$}
+
+    \State$q\leftarrow\left\lfloor \left(b+e\right)\div2\right\rfloor $
+
+    \State$\mbox{\textsc{MergeSort}\_Aux}\left(S,b,q\right)$
+
+    \State$\mbox{\textsc{MergeSort\_Aux}}\left(S,q+1,e\right)$
+
+    \State$\mbox{\textsc{Merge}\_Aux}\left(S,b,q,e\right)$
+
+  \EndIf
+
+\EndProcedure
+
+\end{algorithmic}
+
+\caption{Ordenamiento por mezclas (2)}
+\end{algorithm}
+
+\begin{algorithm}[H]
+\begin{algorithmic}[1]
+
+\Procedure{Merge\_Aux}{$S,b,q,e$}
+
+  \State$n_{1}\leftarrow q-b+1$
+
+  \State$n_{2}\leftarrow e-q$
+
+  \State\textbf{let} $L\left[1,n_{1}+1\right]$\textbf{ and} $R\left[1,n_{2}+1\right]$
+
+  \For{$i\leftarrow0$\textbf{ to} $n_{1}$}
+
+    \State$L\left[i\right]\leftarrow S\left[b+i-1\right]$
+
+  \EndFor
+
+  \For{$i\leftarrow0$\textbf{ to} $n_{2}$}cn
+
+    \State$R\left[i\right]\leftarrow S\left[q+i\right]$
+
+  \EndFor
+
+  \State$L\left[n_{1}+1\right]\leftarrow\infty\land R\left[n_{2}+1\right]\leftarrow\infty$
+
+  \State$i\leftarrow1\land j\leftarrow1$
+
+  \For{$k\leftarrow b$\textbf{ to} $e$}
+
+    \If{$L\left[i\right]<R\left[j\right]$}
+
+      \State$S\left[k\right]\leftarrow L\left[i\right]$
+
+      \State$i\leftarrow i+1$
+
+    \Else
+
+      \State$S\left[k\right]\leftarrow R\left[j\right]$
+
+      \State$j\leftarrow j+1$
+
+    \EndIf
+
+  \EndFor
+
+\EndProcedure
+
+\end{algorithmic}
+
+\caption{Ordenamiento por mezclas (3)}
+\end{algorithm}
+
+
+\subsection{Complejidad}
+
+De acuerdo al teorema maestro, el orden de complejidad de este algoritmo
+es $\Theta\left(\left|S\right|\log_{2}\left(\left|S\right|\right)\right)$.
+
+\subsection{Invariante}
+
+\subsection{Notas de implementación}
+
+\part{Comparación de los algoritmos}
+\end{document}
