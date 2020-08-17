@@ -181,7 +181,9 @@ low, high, suma = FindMaximunSubarray(change, 0, len(change) - 1)
 print(f'Low: {low}, Right: {high}, Sum: {suma}')
 """
 ##Merge sort use
+"""
 array = [x for x in range(30,0,-1)]
 print(array)
 MergeSort(array, 0, len(array)-1)
 print(array)
+"""

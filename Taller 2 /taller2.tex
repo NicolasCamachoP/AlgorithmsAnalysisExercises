@@ -1,0 +1,486 @@
+%% LyX 2.3.2 created this file.  For more info, see http://www.lyx.org/.
+%% Do not edit unless you really know what you are doing.
+\documentclass[spanish]{article}
+\usepackage[T1]{fontenc}
+\usepackage[latin9]{inputenc}
+\usepackage{float}
+\usepackage{amsmath}
+\usepackage{amsthm}
+\usepackage{amssymb}
+\PassOptionsToPackage{normalem}{ulem}
+\usepackage{ulem}
+
+\makeatletter
+
+%%%%%%%%%%%%%%%%%%%%%%%%%%%%%% LyX specific LaTeX commands.
+\newcommand{\noun}[1]{\textsc{#1}}
+\floatstyle{ruled}
+\newfloat{algorithm}{tbp}{loa}
+\providecommand{\algorithmname}{Algoritmo}
+\floatname{algorithm}{\protect\algorithmname}
+
+%%%%%%%%%%%%%%%%%%%%%%%%%%%%%% Textclass specific LaTeX commands.
+\numberwithin{equation}{section}
+\numberwithin{figure}{section}
+\theoremstyle{definition}
+\newtheorem*{defn*}{\protect\definitionname}
+
+%%%%%%%%%%%%%%%%%%%%%%%%%%%%%% User specified LaTeX commands.
+\usepackage{xmpmulti}
+\usepackage{algorithm,algpseudocode}
+\usepackage{mathtools}
+\DeclarePairedDelimiter\floor{\lfloor}{\rfloor}
+
+\makeatother
+
+\usepackage{babel}
+\addto\shorthandsspanish{\spanishdeactivate{~<>}}
+
+\providecommand{\definitionname}{Definición}
+
+\begin{document}
+\title{Problema de la <<sub-secuencia homogénea>> y  de <<buscar valor>>}
+\author{Nicolás Camacho-Plazas}
+\date{\today}
+\maketitle
+\begin{abstract}
+En este documento se presentan los problemas: encontrar la sub-secuencia homogénea contigua más 
+larga y buscar un valor en una secuencia. Para cada uno se presentan dos algoritmos, una solución inocente 
+y una que utiliza el paradigma dividir-y-vencer, además de su análisis, diseño, seudo-código 
+y análisis tanto del invariante como de su complejidad.
+\end{abstract}
+
+\part{Sub-secuencia homogénea}
+
+\section{Análisis}
+
+El problema, informalmente, se puede describir como: buscar, en una secuencia de elementos, en donde existe la mayor cantidad de repeticiones contiguas de un elemento (entiéndase un elemento como un número o letra).
+ Se habla de secuencias de elementos como:
+\[
+S=\left\langle s_{1},s_{2},\cdots,s_{n}\right\rangle =\left\langle s_{i}\in\mathbb{T}\right\rangle 
+\]
+donde $n$ es la cardinalidad (i.e. cantidad de elementos) de la secuencia
+e $i$ es el índice de cada elemento (note que el primer índice es
+1 y no 0).
+
+Para evitar ambigüedades, vamos a definir a $T$ como un conjunto de elementos comparables, es decir, elementos con los cuales se puede utilizar el operador de comparación que expresa la relación de homogeneidad entre los datos comparados. Podría entonces establecerse que:
+\begin{itemize}
+	\item $a$ y $b$ son homogéneos, si y solo si, $a=b$
+\end{itemize}
+
+De modo que la sub-secuencia homogénea contigua más larga está definida por:
+
+\[
+S'_{j}=\left\langle s_{1},s_{2},\cdots,s_{n'}\right\rangle =\left\langle s_{i}\in{S}\land s_{i}=s_{i+1}\forall s\right\rangle 
+\]
+\section{Diseño}
+
+Con las observaciones presentadas en el análisis anterior, podemos
+escribir el diseño de un algoritmo que solucione el problema de encontrar la sub-secuencia homogénea contigua más larga.
+El <<contrato>> de los algoritmos que solucionen el problema está dado por las siguientes condiciones:
+\begin{defn*}
+Entradas:
+\begin{enumerate}
+\item Una secuencia $S=\left\langle s_{1},s_{2},\cdots,s_{n}\right\rangle =\left\langle s_{i}\in\mathbb{T}\right\rangle $
+de $n\in\mathbb{N}$ elementos que pertenecen a un conjunto $\mathbb{T}$.
+En este conjunto debe estar definida la relación de homogeneidad o equivalencia
+(representada en varios lenguajes de programación mediante el operador de comparación $==$).
+\end{enumerate}
+\end{defn*}
+~~~~
+\begin{defn*}
+Salidas:
+\begin{enumerate}
+\item Una sub-secuencia $S'_{j}=\left\langle s_{1},s_{2},\cdots,s_{n'}\right\rangle =\left\langle s_{i}\in{S}\land s_{i}=s_{i+1}\forall s\right\rangle $
+de la secuencia de entrada $S$.
+\end{enumerate}
+\end{defn*}
+~~~~~
+
+\section{Algoritmos}
+
+\subsection{Inocente}
+
+Este algoritmo es la solución que se le ocurrió más rápido al autor y detrás de la cual no existen esfuerzos por disminuir su complejidad (por esto el nombre de "Inocente").
+
+\begin{algorithm}[H]
+\begin{algorithmic}[1]
+
+\Procedure{SimpleMaxSubArray}{$S$}
+
+  \State$n\leftarrow 0$
+  \State$nAux\leftarrow 1$
+  \State $\textbf{let } S' \land S'Aux\textbf{ be new arrays}$
+
+  \For{$j\leftarrow2$ \textbf{to} $\left|S\right|$}
+  			
+  		\If{$S\left[j\right]=S\left[j-1\right]$}
+  				
+  			\If{$nAux == 1$}
+  					
+  				\State $S'Aux[nAux]=S[j-1]$
+  				\State $S'Aux[nAux+1]=S[j]$
+  				\State $nAux = nAux + 1$
+  				
+  			\Else
+  					
+  				\State $nAux = nAux + 1$
+  				\State $S'Aux[nAux]$
+  					
+  			\EndIf
+  				
+  		\Else
+  			
+  			\If{$nAux \geq n$}
+  			
+  				\State $\textbf{copy }S'Aux \textbf{ into } S'$
+  				\State $n = nAux$
+  			
+  			\EndIf
+  			\State $\textbf{empty } S'Aux$
+  			\State $nAux = 1$
+  			
+  		\EndIf	
+
+  \EndFor
+
+  \State\Return{$S'$}
+
+\EndProcedure
+
+\end{algorithmic}
+
+\caption{Comparación de longitudes}
+\end{algorithm}
+\subsubsection{Complejidad}
+Tras realizar inspección de código, basado en el único for, se concluyó que el algoritmo tiene un orden de complejidad de: $O\left(\left|S\right|\right)$.
+\subsubsection{Invariante}
+\begin{itemize}
+	\item Inicio:  Se inicializan las variables $n$, $nAux$ determinando que aún no se han registrado invariantes. Además, se declaran dos secuencias en donde se almacenarán el mayor subarreglo ($S'$) y el subarreglo auxiliar ($S'Aux$).
+	\item Avance: En el for se verifica la homogeneidad contigua de cada elemento ($S\left[j\right]=S\left[j-1\right]$), de modo que en cada iteración en la que se cumpla con dicha característica, se	actualiza el número de coincidencias.
+	Cuando dicha propiedad no se cumple, entonces:
+	\begin{itemize}
+		\item Si $nAux \geq n$, entonces se almacenan los elementos  de $S'Aux$ en $S'$ y se actualiza el 
+		tamaño de el presunto máximo sub-arreglo, es decir: $n=nAux$.
+		\item En caso contrario se descartan los datos auxiliares para estudiar el posible nuevo subarreglo.
+	\end{itemize}
+	\item Terminación: se retorna el máximo subarreglo $S'$ después de que se recorriera $S$ por completo.
+\end{itemize}
+\subsection{Dividir-y-vencer}
+Este algoritmo se basa en el principio de dividir y vencer, y el algoritmo de encontrar el máximo subarreglo adaptado para que en lugar de sumar las derivadas discretas, tenga como criterio el número de repeticiones
+contiguas de un elemento.
+\begin{algorithm}[H]
+	\begin{algorithmic}[1]
+		
+		\Procedure{FindMaxHomogeneousSubarray}{$S$}
+		
+		\If{$high\leq low$}
+		
+			\State\Return $(low, high, 1)$
+		
+		\Else
+			
+			\State $mid = \floor*{(low + high)/2}$
+			\State $(leftlow, lefthigh, leftsum) = 
+			FindMaxHomogeneousSubarray(S, low, mid)$
+			\State $(rightlow, righthigh, rightsum) = 
+			FindMaxHomogeneousSubarray(S, mid + 1, high)$
+			\State $(crosslow, crosshigh, crossSum) = 
+			FindMaxCrossHomogeneousSubarray(S, low, mid, high)$
+		
+			\If{$leftsum\geq rightsum \land leftsum \geq crossSum$}
+			
+				\State\Return $(leftlow, lefthigh, leftsum)$
+			
+			\ElsIf{$rightsum\geq leftsum \land rightsum \geq crossSum$}
+			
+				\State\Return $(rightlow, righthigh, rightsum)$
+				
+			\Else
+				
+				\State\Return $(crosslow, crosshigh, crossSum)$
+				
+			\EndIf
+				
+		
+		\EndIf
+		
+		\EndProcedure
+		
+	\end{algorithmic}
+	
+	\caption{Encontrar el máximo sub-arreglo contiguo}
+\end{algorithm}
+Este algoritmo necesita de dos algoritmos auxiliares:
+\begin{itemize}
+	\item FindMaxCrossHomogeneousSubarray, que encuentra el subarreglo que pasa por el pivote, es decir, 
+	el punto medio que divide a la secuencia original en dos subsecciones.
+\end{itemize}
+Ahora se describirá el algoritmo de FindMaxCrossHomogeneousSubarray:
+\begin{algorithm}[H]
+	\begin{algorithmic}[1]
+		
+		\Procedure{FindMaxCrossHomogeneousSubarray}{$S$}
+		
+			\State $leftsum = -\infty$
+			\State $sum = 0$
+		
+			\For{$i\leftarrow mid \textbf{ downto } low$}
+		
+				\If{$S[i] = S[i+1]$}
+			
+					\State $sum = sum +1$
+			
+				\Else
+			
+					\State $sum = 0$
+					\State$\textbf{pass}$
+				\EndIf
+				\If{$sum \geq leftsum$}
+			
+					\State $leftsum = sum$
+					\State $maxleft = i$
+			
+				\EndIf
+		
+			\EndFor
+		
+			\For{$i\leftarrow mid \textbf{ to } high$}
+		
+				\If{$S[i] = S[i-1]$}
+		
+					\State $sum = sum +1$
+		
+				\Else
+		
+					\State $sum = 0$
+					\State$\textbf{pass}$
+				
+				\EndIf
+			
+				\If{$sum \geq rightsum$}
+		
+					\State $rightsum = sum$
+					\State $maxright = i$
+		
+				\EndIf
+		
+			\EndFor
+		
+			\State\Return $(maxleft, maxright, leftsum + rightsum)$
+
+		\EndProcedure
+		
+	\end{algorithmic}
+	
+	\caption{Encontrar el máximo sub-arreglo contiguo cruzado}
+\end{algorithm}
+\subsubsection{Complejidad}
+\begin{itemize}
+	\item $FindMaxCrossHomogeneousSubarray$: Tras realizar inspección de código se determinó que 
+	el algoritmo tiene un orden de complejidad de: $O\left(\left|S\right|\right)$ por los dos ciclos no anidados.
+	\item $FindMaxHomogeneousSubarray$: Al ser un método dividir-y-vencer, y según el Teorema maestro se
+	establece que: 
+	$$
+	T(n)=\begin{cases}
+	O(0),
+	& \mbox{caso base,}\\
+	2T(\frac{n}{2})+O(n), & \mbox{si $n\in|S|$}
+	\end{cases}
+	$$
+	De modo que al utilizar el "Teorema maestro" se concluye que el algoritmo concuerda con 
+	el caso 2 de modo que se determina que:
+	$$
+	T(n)\in \theta(nlog_2n)
+	$$
+\end{itemize}
+\subsubsection{Invariante}
+En cada iteración for, la variable $sum$ guarda el número de elementos contiguos homogéneos de cada subsección (bien sea del pivote $mid$ hasta $low$ o del pivote $mid$ a $high$).
+Al finalizar los for, $leftsum$ tiene el mayor número de elementos contiguos y $maxleft$ su posición en la sección comprendida entre $low$ y $mid$ ; $rightsum$ y $maxright$ el de la sección comprendida entre $mid$ y 
+$high$. Lo anterior se garantiza porque cuando:
+\begin{itemize}
+	\item $sum \geq leftsum \lor rightsun$, se guarda su valor e índice.
+	\item En el caso contrario, se reinicia el conteo y se ignora el índice. 
+\end{itemize}
+\part{Buscar valor}
+\section{Análisis}
+El problema, informalmente, se puede describir como: buscar un valor en una secuencia de elementos.
+Se habla de secuencias de elementos como:
+\[
+S=\left\langle s_{1},s_{2},\cdots,s_{n}\right\rangle =\left\langle s_{i}\in\mathbb{Z}\right\rangle 
+\]
+donde $n$ es la cardinalidad (i.e. cantidad de elementos) de la secuencia
+e $i$ es el índice de cada elemento (note que el primer índice es
+1 y no 0).
+
+Para evitar ambigüedades, vamos a definir a $Z$ como un conjunto de elementos ordenables, es decir, elementos que cumplan relación de orden parcial. Podría entonces establecerse los elementos o valores de la secuencia deben cumplir las siguientes premisas:
+\begin{itemize}
+	\item Reflexividad: $a\le a$.
+	\item Antisimetría: si $a\le b$ y $b\le a$, entonces $a=b$.
+	\item Transitividad: si $a\le b$ y $b\le c$, entonces $a\le c$.
+\end{itemize}
+
+\section{Diseño}
+Con las observaciones presentadas en el análisis anterior, podemos
+escribir el diseño de un algoritmo que solucione el problema de encontrar un valor en una secuencia.
+El <<contrato>> de los algoritmos que solucionen el problema está dado por las siguientes condiciones:
+\begin{defn*}
+	Entradas:
+	\begin{enumerate}
+		\item Una secuencia $S=\left\langle s_{1},s_{2},\cdots,s_{n}\right\rangle =\left\langle s_{i}\in\mathbb{Z}\right\rangle $
+		de $n\in\mathbb{N}$ elementos que pertenecen a un conjunto $\mathbb{Z}$.
+		En este conjunto debe estar definida la relación $\le$.
+		\item El valor $v\in{S}$ que se pretende buscar. 
+	\end{enumerate}
+\end{defn*}
+~~~~
+\begin{defn*}
+	Salidas:
+	\begin{enumerate}
+		\item Un indice $j$ que implica la posición del valor $v$ en $S$
+		de modo que $v=s_{i}$ en donde $s_{i} \in{S} \land 1 \le i \le n \land n=|S|$. Además $j$ será $-1$ si no se encontró $v$ en la secuencia $S$.
+	\end{enumerate}
+\end{defn*}
+~~~~~
+\section{Algoritmos}
+\subsection{Inocente}
+Este algoritmo es la solución que se le ocurrió más rápido al autor y detrás de la cual no existen esfuerzos por disminuir su complejidad (por esto el nombre de "Inocente").
+\begin{algorithm}[H]
+	\begin{algorithmic}[1]
+		
+		\Procedure{SimpleIndexOf}{$S$,$v$}
+		
+		\State $j=-1$
+	
+		\For{$i\leftarrow1$ \textbf{to} $\left|S\right|$}
+			 
+			 \If{$S\left[i\right]=v$}
+			 	
+			 	\State $j = i$
+			 	\State $break$
+			 	
+			 \EndIf
+	
+		\EndFor
+		
+		\State\Return{$j$}
+		
+		\EndProcedure
+		
+	\end{algorithmic}
+	
+	\caption{Recorrer y comparar}
+\end{algorithm}
+\subsubsection{Complejidad}
+Al realizar la inspección de código es evidente determinar que tiene un orden de complejidad de $O\left(\left|S\right|\right)$, dado que solo hay un For, no existe recursividad  y no se usan algoritmos auxiliares.
+\subsubsection{Invariante}
+\begin{itemize}
+	\item Inicio:  Se inicializa $j = -1$ para indicar que no se ha encontrado el valor.
+	\item Avance: si $S\left[i\right] = v$ se modifica el valor de $j$ para indicar su indice y termine, itere de lo contrario.
+	\item Terminación: si al retornar $j$, su valor no cambió, significa que no se encontraron coincidencias, en caso contrario implicará que $j$ tiene el indice de el valor $v$ en $S$.
+\end{itemize}
+\subsection{Dividir-y-vencer}
+Este algoritmo se basa en el uso de las ideas $QuickSort$ relacionadas a la elección de un pivote aleatorio y del orden parcial en un lado del pivote.
+\begin{algorithm}[H]
+	\begin{algorithmic}[1]
+		\Procedure QuickSortSearch{S, v}
+		
+			\State\Return $QuickSortSearchAux(S,0,len(S)-1, v)$
+		
+		\EndProcedure
+	\end{algorithmic}
+	\caption {Búsqueda por ordenamiento basado en pivotes aleatorios}
+\end{algorithm}
+El anterior algoritmo organiza los parámetros que requiere $QuickSortSearchAux$ descrito a continuación:
+\begin{algorithm}[H]
+	\begin{algorithmic}[1]
+		\Procedure{QuickSortSearchAux}{S, p, r, v}
+		
+			\If{p<r}
+			
+				\State $q = RandomizedPartition(S, p, r, v)$
+				
+				\If{S[q] = v}
+					
+					\State\Return $q$
+					
+				\ElsIf{S[q] > v}
+				
+					\State\Return $QuickSortSearchAux(S,p,q-1,v)$
+					
+				\Else 
+				
+					\State\Return $QuickSortSearchAux(S, q+1,r,v)$
+					
+				\EndIf
+					
+				
+			\Else
+			
+				\State\Return $S[r]$
+				
+			\EndIf
+		
+		\EndProcedure
+	\end{algorithmic}
+	\caption{Lógica recursiva}
+\end{algorithm}
+El anterior algoritmo requiere de $RandomizedPartition$ que elige de forma aleatoria un pivote y sobre el ordena parcialmente una sección del arreglo.
+\begin{algorithm}[H]
+	\begin{algorithmic}[1]
+		\Procedure{RandomizedPartition}{S,p,r,v}
+		
+		\State$\textbf{Let }i \textbf{ be a random number between p and r}$
+		\State$Swap(S[r],S[i])$
+		\State\Return $Partition(S,p,r,v)$
+		
+		\EndProcedure
+	\end{algorithmic}
+	\caption{Elección pivote aleatorio}
+\end{algorithm}
+Para lograr el ordenamiento parcial, el anterior algoritmo se apoya en $Partition$ descrito a continuación.
+\begin{algorithm}[H]
+	\begin{algorithmic}[1]
+	\Procedure{Partition}{S,p,r,v}
+	
+		\State $x=S[r]$
+		\State $i=p-1$
+		\For{$j\leftarrow p \textbf{ to } r$}
+			
+			\If $S[j] \leq x$
+			
+				\State $i = i + 1$
+				\State $Swap(S[i],S[j])$
+			
+			\EndIf
+	
+		\EndFor
+		
+		\State $Swap(S[i+1],S[r])$
+		
+		\State\Return $i + 1$
+	
+	\EndProcedure
+	\end{algorithmic}
+	\caption{Ordenamiento parcial}
+\end{algorithm}
+\subsubsection{Complejidad}
+Para analizar la complejidad de $QuickSortSearch$ es necesario tener en cuenta:
+\begin{itemize}
+	\item El orden de complejidad de $Partition$, encontrado por inspección de código, es $O\left(\left|S\right|\right)$.
+	\item Por lo anterior, el orden de complejidad de $RandomizedPartition$ es $O\left(\left|S\right|\right)$.
+	\item De modo que, para la complejidad de $QuickSortSearchAux$, teniendo en cuenta la cantidad de llamados recurrentes ($1$), el número de divisiones ($2$) y la complejidad afuera de la recursión ($O\left(\left|S\right|\right)$), se concluye que: 
+	$$
+	T(n)=\begin{cases}
+	O(0),
+	& \mbox{caso base,}\\
+	T(\frac{n}{2})+O(n), & \mbox{si $n\in|S|$}
+	\end{cases}
+	$$
+	De modo que, por el Teorema maestro, se determina a el orden de complejidad total como $\theta(n)$.
+\end{itemize}
+\subsubsection{Invariante}
+Para encontrar el invariante se analiza $Partition$.
+En la posición $q$ queda el pivote aleatorio y todos los elementos a su izquierda y derecha, están parcialmente ordenados.
+Eventualmente, a medida que se generan particiones, en $QuickSortSearchAux$ la variable $q$ tendrá el índice de el valor buscado ($S[q] = v$) y por lo tanto se retornará.
+\end{document}
