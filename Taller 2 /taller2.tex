@@ -173,7 +173,7 @@ Primero está el método que adapta el retorno para el usuario:
 \begin{algorithm}[H]
 	\begin{algorithmic}[1]
 		\State $start, end, size = FindMaxHomogeneousSubarray(S)$
-		\State\Return $S[start..End]$ 
+		\State\Return $S[start..end]$ 
 	\end{algorithmic}
 	\caption{Adaptador para el usuario}
 \end{algorithm}
@@ -477,7 +477,7 @@ Para lograr el ordenamiento parcial, el anterior algoritmo se apoya en $Partitio
 Para analizar la complejidad de $QuickSortSearch$ es necesario tener en cuenta:
 \begin{itemize}
 	\item El orden de complejidad de $Partition$, encontrado por inspección de código, es $O\left(\left|S\right|\right)$.
-	\item Por lo anterior, el orden de complejidad de $RandomizedPartition$ es $O\left(\left|S\right|\right)$.
+	\item Por lo anterior, el orden de complejidad de $RandomizedPartition$ es $O\left(\left|S\right|\right)$. Cabe resaltar que la generación de un número aleatorio es $O\left(\left|1\right|\right)$ 
 	\item De modo que, para la complejidad de $QuickSortSearchAux$, teniendo en cuenta la cantidad de llamados recurrentes ($1$), el número de divisiones ($2$) y la complejidad afuera de la recursión ($O\left(\left|S\right|\right)$), se concluye que: 
 	$$
 	T(n)=\begin{cases}
