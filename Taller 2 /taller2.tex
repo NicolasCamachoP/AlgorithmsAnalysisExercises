@@ -169,6 +169,15 @@ Tras realizar inspección de código, basado en el único for, se concluyó que el a
 \subsection{Dividir-y-vencer}
 Este algoritmo se basa en el principio de dividir y vencer, y el algoritmo de encontrar el máximo subarreglo adaptado para que en lugar de sumar las derivadas discretas, tenga como criterio el número de repeticiones
 contiguas de un elemento.
+Primero está el método que adapta el retorno para el usuario:
+\begin{algorithm}[H]
+	\begin{algorithmic}[1]
+		\State $start, end, size = FindMaxHomogeneousSubarray(S)$
+		\State\Return $S[start..End]$ 
+	\end{algorithmic}
+	\caption{Adaptador para el usuario}
+\end{algorithm}
+El anterior algoritmo necesita de $FindMaxHomogeneousSubarray$ descrito a continuación:
 \begin{algorithm}[H]
 	\begin{algorithmic}[1]
 		

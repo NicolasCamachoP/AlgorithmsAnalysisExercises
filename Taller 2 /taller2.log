@@ -1,4 +1,4 @@
-This is pdfTeX, Version 3.14159265-2.6-1.40.21 (TeX Live 2020/Arch Linux) (preloaded format=pdflatex 2020.8.15)  16 AUG 2020 11:04
+This is pdfTeX, Version 3.14159265-2.6-1.40.21 (TeX Live 2020/Arch Linux) (preloaded format=pdflatex 2020.8.15)  17 AUG 2020 13:25
 entering extended mode
  restricted \write18 enabled.
  %&-line parsing enabled.
@@ -316,34 +316,34 @@ ar la sub-secuencia
 [1
 
 {/var/lib/texmf/fonts/map/pdftex/updmap/pdftex.map}] [2] [3]
-Overfull \hbox (44.40306pt too wide) in paragraph at lines 184--186
+Overfull \hbox (44.40306pt too wide) in paragraph at lines 193--195
 [] $\OT1/cmr/m/n/10 (\OML/cmm/m/it/10 leftlow; lefthigh; leftsum\OT1/cmr/m/n/10
  ) = \OML/cmm/m/it/10 FindMaxHomogeneousSubarray\OT1/cmr/m/n/10 (\OML/cmm/m/it/
 10 S; low; mid\OT1/cmr/m/n/10 )$ 
  []
 
 
-Overfull \hbox (44.33783pt too wide) in paragraph at lines 186--188
+Overfull \hbox (44.33783pt too wide) in paragraph at lines 195--197
 [] $\OT1/cmr/m/n/10 (\OML/cmm/m/it/10 rightlow; righthigh; rightsum\OT1/cmr/m/n
 /10 ) = \OML/cmm/m/it/10 FindMaxHomogeneousSubarray\OT1/cmr/m/n/10 (\OML/cmm/m/
 it/10 S; mid \OT1/cmr/m/n/10 +
  []
 
 
-Overfull \hbox (115.59596pt too wide) in paragraph at lines 188--190
+Overfull \hbox (115.59596pt too wide) in paragraph at lines 197--199
 [] $\OT1/cmr/m/n/10 (\OML/cmm/m/it/10 crosslow; crosshigh; crossSum\OT1/cmr/m/n
 /10 ) = \OML/cmm/m/it/10 FindMaxCrossHomogeneousSubarray\OT1/cmr/m/n/10 (\OML/c
 mm/m/it/10 S; low; mid; high\OT1/cmr/m/n/10 )$ 
  []
 
 [4] [5] [6] [7]
-Overfull \hbox (18.03731pt too wide) in paragraph at lines 394--427
+Overfull \hbox (18.03731pt too wide) in paragraph at lines 403--436
 []\T1/cmr/m/n/10 El an-te-rior al-go-rit-mo or-ga-ni-za los pa-rá-me-tros que r
 e-quie-re $\OML/cmm/m/it/10 QuickSortSearchAux$
  []
 
 
-Overfull \hbox (9.02515pt too wide) in paragraph at lines 441--466
+Overfull \hbox (9.02515pt too wide) in paragraph at lines 450--475
 []\T1/cmr/m/n/10 Para lo-grar el or-de-na-mien-to par-cial, el an-te-rior al-go
 -rit-mo se apo-ya en $\OML/cmm/m/it/10 Partition$
  []
@@ -353,10 +353,10 @@ LaTeX Info: Redefining \. on input line 7.
 LaTeX Info: Redefining \% on input line 7.
 ) ) 
 Here is how much of TeX's memory you used:
- 5039 strings out of 480478
- 67504 string characters out of 5905959
- 329876 words of memory out of 5000000
- 20987 multiletter control sequences out of 15000+600000
+ 5044 strings out of 480478
+ 67570 string characters out of 5905959
+ 330876 words of memory out of 5000000
+ 20992 multiletter control sequences out of 15000+600000
  551363 words of font info for 68 fonts, out of 8000000 for 9000
  1141 hyphenation exceptions out of 8191
  37i,8n,35p,295b,361s stack positions out of 5000i,500n,10000p,200000b,80000s
@@ -378,7 +378,7 @@ share/texmf-dist/fonts/type1/public/cm-super/sfrm0800.pfb></usr/share/texmf-dis
 t/fonts/type1/public/cm-super/sfrm0900.pfb></usr/share/texmf-dist/fonts/type1/p
 ublic/cm-super/sfrm1000.pfb></usr/share/texmf-dist/fonts/type1/public/cm-super/
 sfrm1200.pfb></usr/share/texmf-dist/fonts/type1/public/cm-super/sfrm1728.pfb>
-Output written on taller2.pdf (9 pages, 275308 bytes).
+Output written on taller2.pdf (9 pages, 276156 bytes).
 PDF statistics:
  118 PDF objects out of 1000 (max. 8388607)
  86 compressed objects within 1 object stream
