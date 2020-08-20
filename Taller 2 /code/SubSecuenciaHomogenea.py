@@ -1,34 +1,3 @@
-def SimpleMaxSubArray(S):
-    n = 0
-    nAux = 1
-    subArray = []
-    subArrayAux = []
-    end = 1
-    for i in range(0, len(S)):
-        for j in range (end, len(S)):
-            if S[j] == S[j-1]:
-                if nAux == 1:
-                    subArrayAux.append(S[j-1])
-                    subArrayAux.append(S[j])
-                    nAux += 1
-                else:
-                    subArrayAux.append(S[j])
-                    nAux += 1
-                #end if
-            else:
-                end = j + 1
-                break
-            #end if
-        #end for
-        if nAux >= n:
-            subArray = subArrayAux[:nAux]
-            n = nAux
-        #end if
-        subArrayAux = []
-        nAux = 1
-    #end for
-    return subArray
-#end def
 def SimpleMaxSubArrayv2(S):
     n = 0
     nAux = 1

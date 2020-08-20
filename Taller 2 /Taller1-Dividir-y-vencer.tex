@@ -47,7 +47,8 @@
 En este documento se presentan los problemas: encontrar la sub-secuencia homogénea contigua más 
 larga y buscar un valor en una secuencia. Para cada uno se presentan dos algoritmos, una solución inocente 
 y una que utiliza el paradigma dividir-y-vencer, además de su análisis, diseño, seudo-código 
-y análisis tanto del invariante como de su complejidad.
+y análisis tanto del invariante como de su complejidad. Además contienen los mismos elementos anteriormente
+mencionados, pero que estudian el problema de encontrar el prefijo común más largo en una secuencia de palabras.
 \end{abstract}
 
 \part{Sub-secuencia homogénea}
@@ -59,7 +60,7 @@ El problema, informalmente, se puede describir como: buscar, en una secuencia de
 \[
 S=\left\langle s_{1},s_{2},\cdots,s_{n}\right\rangle =\left\langle s_{i}\in\mathbb{T}\right\rangle 
 \]
-donde $n$ es la cardinalidad (i.e. cantidad de elementos) de la secuencia
+Donde $n$ es la cardinalidad (i.e. cantidad de elementos) de la secuencia
 e $i$ es el índice de cada elemento (note que el primer índice es
 1 y no 0).
 
@@ -292,7 +293,7 @@ Ahora se describirá el algoritmo de FindMaxCrossHomogeneousSubarray:
 	establece que: 
 	$$
 	T(n)=\begin{cases}
-	O(0),
+	O(1),
 	& \mbox{caso base,}\\
 	2T(\frac{n}{2})+O(n), & \mbox{si $n\in|S|$}
 	\end{cases}
@@ -318,7 +319,7 @@ Se habla de secuencias de elementos como:
 \[
 S=\left\langle s_{1},s_{2},\cdots,s_{n}\right\rangle =\left\langle s_{i}\in\mathbb{Z}\right\rangle 
 \]
-donde $n$ es la cardinalidad (i.e. cantidad de elementos) de la secuencia
+Donde $n$ es la cardinalidad (i.e. cantidad de elementos) de la secuencia
 e $i$ es el índice de cada elemento (note que el primer índice es
 1 y no 0).
 
@@ -481,7 +482,7 @@ Para analizar la complejidad de $QuickSortSearch$ es necesario tener en cuenta:
 	\item De modo que, para la complejidad de $QuickSortSearchAux$, teniendo en cuenta la cantidad de llamados recurrentes ($1$), el número de divisiones ($2$) y la complejidad afuera de la recursión ($O\left(\left|S\right|\right)$), se concluye que: 
 	$$
 	T(n)=\begin{cases}
-	O(0),
+	O(1),
 	& \mbox{caso base,}\\
 	T(\frac{n}{2})+O(n), & \mbox{si $n\in|S|$}
 	\end{cases}
@@ -490,6 +491,105 @@ Para analizar la complejidad de $QuickSortSearch$ es necesario tener en cuenta:
 \end{itemize}
 \subsubsection{Invariante}
 Para encontrar el invariante se analiza $Partition$.
-En la posición $q$ queda el pivote aleatorio y todos los elementos a su izquierda y derecha, están parcialmente ordenados.
-Eventualmente, a medida que se generan particiones, en $QuickSortSearchAux$ la variable $q$ tendrá el índice de el valor buscado ($S[q] = v$) y por lo tanto se retornará.
+En la posición $q$ queda el pivote aleatorio y todos los elementos a su izquierda y derecha, están parcialmente ordenados. Eventualmente, a medida que se generan particiones, en $QuickSortSearchAux$ la variable $q$ tendrá el índice de el valor buscado ($S[q] = v$) y por lo tanto se retornará.
+\part{Bono - Prefijo común más largo}
+\subsection{Análisis}
+El problema se puede resumir, de forma informal, como; encontrar el prefijo común más largo entre una colección de palabras. Se habla de colección de palabras a una secuencia de elementos que están compuestos de caracteres, de modo que $S$ sea la secuencia, $S_i$ un elemento, $n$ la cardinalidad de la secuencia y $m$ el número de 
+caracteres de un elemento, por lo tanto se debe cumplir que:
+\[
+S=\left\langle S_{1},S_{2},\cdots,S_{n}|n\in\mathbb{N}\right\rangle 
+\]
+\[
+S_i=\left\langle S_{i1},S_{i2},\cdots,S_{im}\right\rangle=\left\langle S_{im}\in\mathbb{T}|m\in\mathbb{N}\right\rangle 
+\]
+Donde $\mathbb{T}$ es el conjunto de caracteres. Finalmente, se define al prefijo común más largo $S_i'$ como:
+\[
+S_i'=\left\langle S_{i1},S_{i2},\cdots,S_{im}|\forall x \in S_{i}' \Rightarrow x \in S_{i}\right\rangle
+\] 
+\subsection{Diseño}
+Teniendo en cuenta lo establecido en la etapa de análisis del problema, el <<contrato>> del algoritmo que lo
+solucione debe cumplir que:
+\begin{defn*}
+	Entradas:
+	\begin{enumerate}
+		\item Una secuencia $S=\left\langle S_{1},S_{2},\cdots,S_{n}|n\in\mathbb{N}\right\rangle $ 
+		donde $S_i=\left\langle S_{i1},S_{i2},\cdots,S_{im}\right\rangle=\left\langle S_{im}\in\mathbb{T}|m\in\mathbb{N}\right\rangle$
+	\end{enumerate}
+\end{defn*}
+~~~~
+\begin{defn*}
+	Salidas:
+	\begin{enumerate}
+		\item El prefijo común más largo definido como $S_i'=\left\langle S_{i1},S_{i2},\cdots,S_{im}|\forall x \in S_{i}' \Rightarrow x \in S_{i}\right\rangle$
+	\end{enumerate}
+\end{defn*}
+~~~~~
+\subsection{Algoritmo}
+\begin{algorithm}[H]
+	\begin{algorithmic}[1]
+	\Procedure{Prefijo}{S}
+	
+		\State\Return $PrefijoAux(S,0,|S|)$
+	
+	\EndProcedure
+	\end{algorithmic}
+	\caption{Adaptador para usuario}
+\end{algorithm}
+El anterior algoritmo requiere de $PrefijoAux$ donde se desarrolla la lógica recursiva que se aprovecha 
+del paradigma de dividir-y-vencer para encontrar el prefijo común más largo.
+\begin{algorithm}[H]
+	\begin{algorithmic}[1]
+		\Procedure{PrefijoAux}{S, b, e}
+			\If{b=e}
+				\State\Return $S[b]$
+			\Else
+				\State $m=\floor{(b+e)/2}$
+				\State\Return $Prefijo2(PrefijoAux(S,b,m),PrefijoAux(S,m+1,e))$
+			\EndIf
+		
+		\EndProcedure
+	\end{algorithmic}
+	\caption{Distribución recursiva de las palabras}
+\end{algorithm}
+Este algoritmo requiere de $Prefijo2$, el cual retorna el prefijo común más largo entre dos palabras.
+\begin{algorithm}[H]
+	\begin{algorithmic}[1]
+		\Procedure{Prefijo2}{Sa, Sb}
+			
+			\State $end = Min(|Sa|,|Sb|)$
+			\State $\textbf{Let }prefix\textbf{ be a new string}$
+			\For{$i \leftarrow 1 \textbf{ to }end$}
+				\If{Sa[i] = Sb[i]}
+					
+					\State$Concatenate(prefix, Sa[i])$
+					
+				\Else
+				
+					\State$\textbf{break}$
+				
+				\EndIf
+			\EndFor
+			
+			\State\Return $prefix$
+		\EndProcedure
+	\end{algorithmic}
+	\caption{Prefijo común más largo entre dos palabras}
+\end{algorithm}
+\subsubsection{Complejidad}
+Para encontrar el análisis de complejidad es pertinente encontrar, por inspección de código, la complejidad de 
+$Prefijo2$ que, por el único For que tiene, resulta tener un orden de complejidad de $O(m)$ donde $m$ es
+el tamaño de la menor palabra de la secuencia. Después de esto, teniendo en cuenta la complejidad fuera de la recursión ($O(m)$), la cantidad de llamados 
+recursivos ($a = 2$) y el número de divisiones ($b = 2$) se puede establecer:
+$$
+T(n)=\begin{cases}
+O(1),
+& \mbox{caso base,}\\
+2T(\frac{n}{2})+O(m), & \mbox{si $n\in|S| \land m\in|S_{i}|$}
+\end{cases}
+$$
+Por el teorema maestro se puede decir que el orden de complejidad del algoritmo es de $O(nm\log	n)$.
+
+\subsubsection{Invariante}
+La subsecuencia formada a partir de los caracteres contiguos iguales, que forman un prefijo, entre $S_a$ y $S_b$  se almacena en 
+$prefix$.
 \end{document}
