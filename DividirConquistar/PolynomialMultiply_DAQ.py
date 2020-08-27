@@ -5,9 +5,9 @@ def PolynomialPrinting(*polynoms):
 		for i in range(size):
 			print(poly[i], end = "")
 			if (i != 0): 
-				print("x^"+ str(i), end = ""); 
+				print("x^"+ str(i), end = "") 
 			if (i != size - 1): 
-				print(" +  ", end = "");
+				print(" +  ", end = "")
 			#End if
 		#End for
 		print(" ") 
