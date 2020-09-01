@@ -1,0 +1,163 @@
+%% LyX 2.3.2 created this file.  For more info, see http://www.lyx.org/.
+%% Do not edit unless you really know what you are doing.
+\documentclass[spanish]{article}
+\usepackage[T1]{fontenc}
+\usepackage[latin9]{inputenc}
+\usepackage{float}
+\usepackage{amsmath}
+\usepackage{amsthm}
+\usepackage{amssymb}
+\PassOptionsToPackage{normalem}{ulem}
+\usepackage{ulem}
+
+\makeatletter
+
+%%%%%%%%%%%%%%%%%%%%%%%%%%%%%% LyX specific LaTeX commands.
+\newcommand{\noun}[1]{\textsc{#1}}
+\floatstyle{ruled}
+\newfloat{algorithm}{tbp}{loa}
+\providecommand{\algorithmname}{Algoritmo}
+\floatname{algorithm}{\protect\algorithmname}
+
+%%%%%%%%%%%%%%%%%%%%%%%%%%%%%% Textclass specific LaTeX commands.
+\numberwithin{equation}{section}
+\numberwithin{figure}{section}
+\theoremstyle{definition}
+\newtheorem*{defn*}{\protect\definitionname}
+
+%%%%%%%%%%%%%%%%%%%%%%%%%%%%%% User specified LaTeX commands.
+\usepackage{xmpmulti}
+\usepackage{algorithm,algpseudocode}
+\usepackage{mathtools}
+\DeclarePairedDelimiter\floor{\lfloor}{\rfloor}
+
+\makeatother
+
+\usepackage{babel}
+\addto\shorthandsspanish{\spanishdeactivate{~<>}}
+
+\providecommand{\definitionname}{DefiniciÃ³n}
+
+\begin{document}
+\title{Solución Parcial 1 -  Análisis Algoritmos}
+\author{Nicolás Camacho-Plazas}
+\date{\today}
+\maketitle
+\part{Algoritmos de promedio}
+\section{Diseño del problema}
+\subsection{Entradas}
+\begin{itemize}
+	\item Una secuencia $
+	A=\left\langle a_{1},a_{2},\cdots,a_{n}\right\rangle =\left\langle a_{i}\in\mathbb{T}\right\rangle$, si $n = |A|$, donde 
+	el conjunto $\mathbb{T}$ está conformados por los elementos que tienen definidas las operaciones de suma y resta.
+	\item Dos indices $i$ y $j$, donde $i \land J \in [1,...,|A|]$, que representan los límites de la subsección de la secuencia de donde se pretende encontrar el promedio.
+\end{itemize}
+\subsection{Salidas}
+\begin{itemize}
+	\item Un valor $z=\frac{1}{|A|}\sum_{1}^{|A|}a_{i}$ que por ende contiene el promedio de los valores de la subsección delimitada entre $i$ y $j$.
+\end{itemize}
+\section{Complejidad}
+\subsection{Algoritmo 1 - Promedio inocente}
+Al realizar inspección de código, por el único for, se concluye que el algoritmo tiene un orden de complejidad de $O\left(\left|A\right|\right)$.
+\subsection{Algoritmo 2 - Promedio dividir y vencer}
+De acuerdo al teorema maestro, y teniendo en cuenta que el problema divide en dos los datos, usa dos veces la recursión y la complejidad fuera de la recursión es $O(1)$, se puede determinar que:
+$$
+T(n)=\begin{cases}
+O(1),
+& \mbox{caso base $n<=1$,}\\
+2T(\frac{n}{2})+O(1), & \mbox{si $n\in|A|$}
+\end{cases}
+$$
+De modo que al estudiar el caso uno del teorema maestro, se establece que:
+$O(1) = O(n^{\log_2 2-\epsilon})$
+
+$\therefore {\log_2 2-\epsilon} = 0 \land \epsilon = 1$
+
+$\therefore T(n)\in\theta(n)$
+\section{Invariante}
+\subsection{Promedio inocente}
+$\mu$ siempre va a ser el total de la secuencia hasta $A[k]$ donde $k\in[1,...,|A|]$.
+\subsection{Dividir y conquistar}
+\begin{itemize}
+	\item $x$ siempre contiene el promedio parcial de la secuencia contenida entre $i$ y $q-1$.
+	\item $y$ siempre contiene el promedio parcial de la secuencia contenida entre $q+1$ y $j$.
+\end{itemize}
+\subsection{De acuerdo a los puntos anteriores, ?cuál algoritmo es mejor de implementar en un contexto dónde se deba calcular muchos promedios en conjuntos de datos de tamaños del orden de los billones de elementos?}
+Teniendo en cuenta que una operación de división es más compleja de realizar que una suma o resta y el algoritmo inocente solo realiza una por promedio, la pila de ejecuciones que genera una recursión tan extensa, y la cantidad de variables empleadas en la recursión, se concluye que resulta más conveniente utilizar el algoritmo de "Promedio inocente".
+\part{Escritura de un algoritmo}
+\section{Análisis del problema}
+Dada una secuencia $A$ de elementos $A_i$ donde $A_i\in\mathbb{T}$ e $i\in [1,...,|A|]$, cuyo
+conjunto $\mathbb{T}$ está conformado por elementos con los que es posible utilizar la operación "$<$", y unos límites $i$ y $j$ que cumplen $i\land j\in [1,...,|A|]\land i<j$, se busca encontrar la cantidad y límites de los rangos aditivos presentes en dicha secuencia. Un rango aditivo 
+se define como una pareja de índices $[a,b]$ donde $A[a]>A[i] \land A[a]<A[j]$ y $A[b]>A[i] \land A[b]<A[j]$.
+\section{Diseño del Algoritmo}
+\subsection{Entradas}
+\begin{itemize}
+	\item Una secuencia $A$ descrita en el análisis del problema y de donde se quieren.
+	\item Un indice $i$ que representa el valor menor de la pareja para encontrar los rangos aditivos y donde 
+	$i\in [1,...,j-1]$.
+	\item Un indice $j>i$ que representa el valor mayor de la pareja para encontrar los rangos aditivos y donde 
+	$j\in [n,...,|A|]$ donde $n>i$.
+\end{itemize}
+\subsection{Salidas}
+\begin{itemize}
+	\item Un valor $z$ que representa la cantidad de rangos aditivos que cumplen con la pareja ${i,j}$ dentro de la secuencia $A$.
+\end{itemize}
+\section{Algoritmo}
+Para resolver el algoritmo se utilizan dos algoritmos, <<CountAditiveRangesAux>> en el que se realiza la recursión siguiendo el paradigma de dividir y vencer, y <<CountAditiveRanges>> el cual adapta los parámetros del usuario y adecúa el retorno. 
+\begin{algorithm}[H]
+	\begin{algorithmic}[1]
+		\Procedure{CountAditiveRangesAux}{$A$,$b$, $e$, $range$}
+		
+			\If{$b=e$}
+				\If{$range[1]<A[b]\textbf{ and }A[b]<range[2]$}
+					\State\Return 1
+				\Else
+					\State\Return 0
+				\EndIf
+			\Else
+				\State $q=\lfloor(e+b)/2\rfloor$
+				\State $totalLeft = CountAditiveRangesAux(A,b,q,range)$
+				\State $totalRight = CountAditiveRangesAux(A,q+1,e,range)$
+				\State\Return $totalLeft+totalRight$
+			\EndIf
+		\EndProcedure
+	\end{algorithmic}
+	\caption{Número posibles límites de rangos aditivos - Dividir y vencer}
+\end{algorithm}
+El siguiente algoritmo utiliza un método llamado \textit{Combinatorial} que puede ser cualquier método 
+de cualquier librería que calcule la combinatoria de dos números enteros.
+\begin{algorithm}[H]
+	\begin{algorithmic}[1]
+		\Procedure{CountAditiveRanges}{$A$, $i$, $j$}
+			\State $total = CountAditiveRangesAux(A,1,|A|,[i,j])$
+			\State\Return $Combinatorial(total,2)+total$
+		\EndProcedure
+	\end{algorithmic}
+	\caption{Número de rangos aditivos en la secuencia}
+\end{algorithm}
+\section{Análisis de complejidad}
+Asumiendo que el algoritmo \textit{Combinatorial} tenga un orden de complejidad $O(1)$, y al utilizar el teorema maestro, teniendo en cuenta que se divide en 2 el problema y se realizan dos llamados recursivos, se establece que:
+$$
+T(n)=\begin{cases}
+O(1),
+& \mbox{caso base $n=1$,}\\
+2T(\frac{n}{2})+O(1), & \mbox{si $n\in|A|$}
+\end{cases}
+$$
+De modo que al estudiar el caso uno del teorema maestro, se establece que:
+$O(1) = O(n^{\log_2 2-\epsilon})$
+
+$\therefore {\log_2 2-\epsilon} = 0 \land \epsilon = 1$
+
+$\therefore T(n)\in\theta(n)$
+\section{Invariante}
+\begin{itemize}
+	\item \textit{CountAditiveRangesAux}: <<$totalLeft$>> siempre va a tener el total de los elementos que están dentro de el rango comprendido entre $i$ y $j$ de la subsecuencia delimitada por $b$ y $q$. <<$totalRight$>> siempre va a tener el total de los elementos que están dentro de el rango comprendido entre $i$ y $j$ de la subsecuencia delimitada por $q+1$ y $e$.
+	\item \textit{CountAditiveRanges}: <<$total$>> contiende la cantidad de elementos que pueden representar 
+	los límites de los rangos aditivos. Su combinatoria contempla la cantidad de rangos que se pueden formar 
+	entre dichos elementos y al sumar el total se contemplan los casos en los que el rango comience y termine por el mismo elemento. 
+\end{itemize}
+\end{document}
+
+
+
