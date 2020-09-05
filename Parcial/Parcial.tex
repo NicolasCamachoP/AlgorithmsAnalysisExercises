@@ -130,13 +130,13 @@ de cualquier librería que calcule la combinatoria de dos números enteros.
 	\begin{algorithmic}[1]
 		\Procedure{CountAditiveRanges}{$A$, $i$, $j$}
 			\State $total = CountAditiveRangesAux(A,1,|A|,[i,j])$
-			\State\Return $Combinatorial(total,2)+total$
+			\State\Return $\frac{total!}{2(total-2)!}+total$
 		\EndProcedure
 	\end{algorithmic}
 	\caption{Número de rangos aditivos en la secuencia}
 \end{algorithm}
 \section{Análisis de complejidad}
-Asumiendo que el algoritmo \textit{Combinatorial} tenga un orden de complejidad $O(1)$, y al utilizar el teorema maestro, teniendo en cuenta que se divide en 2 el problema y se realizan dos llamados recursivos, se establece que:
+Al utilizar el teorema maestro, teniendo en cuenta que se divide en 2 el problema y se realizan dos llamados recursivos, se establece que:
 $$
 T(n)=\begin{cases}
 O(1),
