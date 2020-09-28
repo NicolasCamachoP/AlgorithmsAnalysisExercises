@@ -1,0 +1,145 @@
+%% LyX 2.3.2 created this file.  For more info, see http://www.lyx.org/.
+%% Do not edit unless you really know what you are doing.
+\documentclass[spanish]{article}
+\usepackage[T1]{fontenc}
+\usepackage[latin9]{inputenc}
+\usepackage{float}
+\usepackage{amsmath}
+\usepackage{amsthm}
+\usepackage{amssymb}
+\PassOptionsToPackage{normalem}{ulem}
+\usepackage{ulem}
+
+\makeatletter
+
+%%%%%%%%%%%%%%%%%%%%%%%%%%%%%% LyX specific LaTeX commands.
+\newcommand{\noun}[1]{\textsc{#1}}
+\floatstyle{ruled}
+\newfloat{algorithm}{tbp}{loa}
+\providecommand{\algorithmname}{Algoritmo}
+\floatname{algorithm}{\protect\algorithmname}
+
+%%%%%%%%%%%%%%%%%%%%%%%%%%%%%% Textclass specific LaTeX commands.
+\numberwithin{equation}{section}
+\numberwithin{figure}{section}
+\theoremstyle{definition}
+\newtheorem*{defn*}{\protect\definitionname}
+
+%%%%%%%%%%%%%%%%%%%%%%%%%%%%%% User specified LaTeX commands.
+\usepackage{xmpmulti}
+\usepackage{algorithm,algpseudocode}
+\usepackage{mathtools}
+\DeclarePairedDelimiter\floor{\lfloor}{\rfloor}
+
+\makeatother
+
+\usepackage{babel}
+\addto\shorthandsspanish{\spanishdeactivate{~<>}}
+
+\providecommand{\definitionname}{DefiniciÃ³n}
+
+\begin{document}
+	\title{Taller 2 - Programación Dinámica}
+	\author{Nicolás Camacho-Plazas}
+	\date{\today}
+	\maketitle
+	\part{Análisis del problema}
+	El problema requiere que se calculen las particiones binarias cuya diferencia de sumas se mínima dado un conjunto de números naturales. El conjunto de números naturales se definirá como una secuencia $S$, donde:
+	\[
+	S=\left\langle s_{1},s_{2},\cdots,s_{n}\right\rangle =\left\langle s_{i}\in\mathbb{N}\right\rangle 
+	\]
+	Las particiones binarias son dos subconjuntos ($A$ y $B$) formados a partir de los elementos de $S$ y cuya unión es equivalente al conjunto $S$, es decir, que todos los elementos de $S$ pertenecerán a $A$ o a $B$ sin pertenecer a los dos; además, si $s$ es la cantidad de elementos en $A$ y $m$ es la cantidad de elementos de $B$, entonces:
+	\[
+	\sum_{i=1}^{s}A_{i} = a
+	\]
+	\[
+	\sum_{i=1}^{m}B_{i} = b
+	\]
+	\[
+	n = a + b
+	\]
+	\[
+	x = |a - b|
+	\]
+	Donde $x$ es el mínimo valor posible de todas las particiones binarias que se pueden formar a partir de la secuencia $S$.
+	\part{Diseño del algoritmo}
+	\section{Entradas}
+	\begin{itemize}
+		\item Una secuencia $S=\left\langle s_{1},s_{2},\cdots,s_{n}\right\rangle =\left\langle s_{i}\in\mathbb{N}\right\rangle$
+	\end{itemize}
+	\section{Salidas}
+	\begin{itemize}
+		\item Los subconjuntos disjuntos $A$ y $B$ formados a partir de $S$ cuya unión es equivalente a $S$ y cuyo valor $x$ es el mínimo posible, siendo $x$ la diferencia entre la suma de todos los elementos del subconjunto $A$ y la suma de los elementos de $B$.
+	\end{itemize}
+	\part{Algoritmo}
+	\begin{algorithm}[H]
+		\begin{algorithmic}[1]
+			\Procedure{binPartitionBT}{S}
+				\State total = 0
+				\For{i < |S|}
+					\State total = total + S[i]
+				\EndFor
+				
+				\State \textbf{Suponga que $M$ es una matriz booleana de tamaño $(|S|+1)x(total + 1)$}
+				
+				\For{$i \leq |S|$}
+					\For{$j \leq total$}
+						\If{j == 0}
+							\State M[i][j] = true
+						\Else
+							\State M[i][j] = false
+						\EndIf
+					\EndFor
+				\EndFor
+				
+				\State \textbf{Suponga que $BT$ es una matriz de enteros de tamaño $(|S|+1)x(total + 1)x(total)$}				
+				
+				\For{i = 1; i < |S| + 1}
+					\For{j = 1; j < total + 1}
+						\If{(j - S[i - 1]) == true}
+							\If{M[i - 1][j - S[i - 1]] == true}
+								\State M[i][j] = true
+								\State BT[i][j] = BT[i][j] \textbf{ Union } BT[i - 1][j - S[i - 1]]
+								\State BT[i][j] \textbf{ Union } S[i - 1]
+							\ElsIf{M[i - 1][j] == true}
+								\State BT[i][j] = true
+								\State BT[i][j] = BT[i][j] \textbf{ Union } BT[i - 1][j]
+							\EndIf
+						\Else
+							\State M[i][j] = M[i - 1][j]
+							\State BT[i][j] = BT[i][j] \textbf{ Union } BT[i - 1][j]
+						\EndIf
+					\EndFor
+				\EndFor
+				
+				\State suma = total/2
+				\State found = false
+				
+				\While{$suma\geq 0 \textbf{ and } found == false$}
+					\If{M[|S|][suma] == true}
+						\State found = true
+					\Else
+						\State suma = suma - 1
+					\EndIf
+				\EndWhile
+				
+				\State secuenciaA = BT[|S|][suma]
+				\State secuenciaB = S\textbf{ y no }secuenciaA
+			
+				\State\Return [secuenciaA, secuenciaB]
+			\EndProcedure
+		\end{algorithmic}
+	\caption{Partición binaria con mínima diferencia de sumas totales}
+	\end{algorithm}
+	\part{Complejidad}
+	Por inspección de código se concluye que la complejidad tienen un orden de $O(nm)$, donde $n = |S|$ y $m = \sum_{0}^{i}S_{i}$.
+	\part{Invariante}
+	\begin{itemize}
+		\item La tabla de memoización M se llena correctamente, es decir, si $M[i][j] = true$, se puede alcanzar el valor j con los elementos pertenecientes a $\left\langle S_{0}, S_{1}, S_{2}, ...., S_{i-1}\right\rangle$ 
+	\end{itemize}
+
+\end{document}
+
+
+
+
