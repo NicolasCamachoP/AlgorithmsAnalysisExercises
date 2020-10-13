@@ -11,11 +11,11 @@ def OptTreeNaive_Aux(P, Q, i, j):
             right = OptTreeNaive_Aux(P, Q, r + 1, j)
             w = getW(P, Q, i, j)
             total = left + right + w
-            if min_value > total:
+            if total < min_value:
                 min_value = total
             #End if
         #End for 
-        return total
+        return min_value
     #End if
 #End def
 
